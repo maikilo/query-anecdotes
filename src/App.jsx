@@ -3,9 +3,17 @@ import { getAll, update } from '../requests'
 
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
+import { UseNotificationDispatch } from './NotificationContext'
 
 const App = () => {
   const queryClient = useQueryClient()
+
+  const dispatch = UseNotificationDispatch()
+  const setNotification = (payload) => {
+    dispatch({ payload, type: 'CREATE' })
+    setTimeout(() => dispatch({ type: 'CLEAR' }), 5000)
+  }
+
   const voteMutation = useMutation({ 
     mutationFn: update,
     onSuccess: () => {
@@ -16,12 +24,14 @@ const App = () => {
   const handleVote = (anecdote) => {
     console.log('vote')
     voteMutation.mutate({...anecdote, votes: anecdote.votes + 1})
+    setNotification(`Voted for anecdote '${anecdote.content}'`)
   }
 
   const result = useQuery({
     queryKey: ['anecdotes'],
     queryFn: getAll,
-    retry: 1
+    retry: 1,
+    refetchOnWindowFocus: false,
   })
 
   if (result.isPending) {
