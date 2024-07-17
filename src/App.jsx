@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
-import { getAll } from '../requests'
+import { getAll, update } from '../requests'
 
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
